@@ -1,4 +1,6 @@
 
+library work;
+use work.utils.all;
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -14,7 +16,7 @@ entity RAM is
     port(
         clock, writeEnable : in std_logic;
         addressBus: in std_logic_vector(addressWidth-1 downto 0);
-        inputBus : in std_logic_vector(dataWidth-1 downto 0);
+        inputBus : inout std_logic_vector(dataWidth-1 downto 0);
         outputBus : out std_logic_vector(dataWidth-1 downto 0)
     );
 end entity;
@@ -22,17 +24,36 @@ end entity;
 architecture RAMArch of RAM is
     type ramType is array(0 to 2**addressWidth) of std_logic_vector(dataWidth-1 downto 0);
 
+    pure function to_string(s: ramType) return string is
+        variable part : string(0 to dataWidth) := (others => NUL);
+        variable rv : string(0 to s'length*(dataWidth+1)) := (others => NUL);
+    begin
+        for i in 0 to s'length-1 loop
+            part := to_string(s(i)) & lf;
+            for j in 0 to part'length-1 loop
+                rv(i*(dataWidth+1)+j) := part(j);
+            end loop;
+        end loop;
+        return lf & rv;
+    end function;
+
     --Helper function, reads memory from a file
     impure function loadRamFromFile return ramType is
+        constant zero : std_logic_vector(dataWidth-1 downto 0) := (others => '0');
         file ramfile : text open read_mode is defaultValueFile;
         variable textLine : line;
         variable textBitVector : bit_vector(dataWidth-1 downto 0);
         variable textRam : ramType;
+        variable j : integer := 0;
     begin
         for i in ramType'range loop
+            textRam(i) := zero;
+        end loop;
+        while not endfile(ramfile) loop
             readline(ramfile, textLine);
             read(textLine, textBitVector);
-            textRam(i) := to_stdlogicvector(textBitVector);
+            textRam(j) := to_stdlogicvector(textBitVector);
+            j := j + 1;
         end loop;
         return textRam;
     end function;
@@ -57,52 +78,15 @@ architecture RAMArch of RAM is
 begin
     process(clock) is
     begin
-        if rising_edge(clock) and writeEnable = '1' then
-            physicalRam(to_integer(unsigned(addressBus))) <= inputBus;
-            dataReg <= physicalRam(to_integer(unsigned(addressBus)));
+        --report to_string(physicalRam);
+        if rising_edge(clock) then
+            if writeEnable = '1' then
+                physicalRam(to_integer(unsigned(addressBus))) <= inputBus;
+            else
+                dataReg <= physicalRam(to_integer(unsigned(addressBus)));
+            end if;            
         end if;
         outputBus <= dataReg;
-    end process;
-end architecture;
-
-library ieee;
-use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-library std;
-use std.textio.all;
-
-entity RAMTestBench is
-end entity;
-
-architecture RAMTestBenchArch of RAMTestBench is
-    constant dataWidth : integer := 8;
-    constant addressWidth :integer := 4;
-    signal finished : std_logic := '0';
-    signal clock : std_logic := '0';
-    signal writeEnable : std_logic := '1';
-    signal addressBus: std_logic_vector(addressWidth-1 downto 0) := (others => '0');
-    signal inputBus : std_logic_vector(dataWidth-1 downto 0);
-    signal outputBus : std_logic_vector(dataWidth-1 downto 0);
-begin
-    ram : entity work.RAM(RAMArch) 
-        generic map(
-            defaultValueFile => "TestBenchMemoryDump",
-            dataWidth => dataWidth,
-            addressWidth => addressWidth
-        )
-        port map(
-            clock => clock, addressBus => addressBus, writeEnable => writeEnable,
-            inputBus => inputBus, outputBus => outputBus
-        );
-    clock <= not clock after 10 ns when (finished='1');
-    process(clock) is 
-    begin
-        if unsigned(outputBus) /= 0 then 
-            report integer'image(to_integer(unsigned(addressBus))) & "\n";
-            addressBus <= std_logic_vector(unsigned(addressBus) + 1);
-        else
-            finished <= '1';
-        end if; 
     end process;
 end architecture;
     
