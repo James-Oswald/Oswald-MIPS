@@ -16,7 +16,7 @@ entity RAM is
     port(
         writeEnable : in std_logic;
         addressBus: in std_logic_vector(addressWidth-1 downto 0);
-        inputBus : inout std_logic_vector(dataWidth-1 downto 0);
+        inputBus : in std_logic_vector(dataWidth-1 downto 0);
         outputBus : out std_logic_vector(dataWidth-1 downto 0)
     );
 end entity;

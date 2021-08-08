@@ -2,7 +2,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity instructionMemory is
+entity dataMemory is
     port(
         memWrite: in std_logic; 
         address: in std_logic_vector(31 downto 0);
@@ -11,7 +11,7 @@ entity instructionMemory is
     );
 end entity;
 
-architecture instructionMemoryArch of instructionMemory is
+architecture dataMemoryArch of dataMemory is
 begin
     physicalRam : entity work.RAM(RAMArch) 
         generic map(
@@ -20,9 +20,9 @@ begin
             addressWidth => 32
         )
         port map(
-            inputBus => writeData
-            addressBus => readAddress,
-            outputBus => instruction, 
-            writeEnable => memWrite,
+            inputBus => writeData,
+            addressBus => address,
+            outputBus => readData, 
+            writeEnable => memWrite
         );
 end architecture;
