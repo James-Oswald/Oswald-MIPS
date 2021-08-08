@@ -5,6 +5,7 @@ use ieee.std_logic_1164.all;
 package utils is
     function to_string(a: std_logic_vector) return string;
     function to_string(a: std_logic) return string;
+    function to_stdlogic(a: boolean) return std_logic;
 end package;
 
 package body utils is
@@ -22,5 +23,13 @@ package body utils is
         return std_logic'image(a);
     end function;
 
+    pure function to_stdlogic(a: boolean) return std_logic is
+    begin
+        if a then
+            return '1';
+        else
+            return '0';
+        end if;
+    end function;
 end package body;
 
