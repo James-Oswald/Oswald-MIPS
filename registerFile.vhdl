@@ -5,9 +5,9 @@ use ieee.std_logic_1164.all;
 entity registerFile is
     port(
         regWrite : in std_logic;
-        readRegister1 : in std_logic_vector(3 downto 0);
-        readRegister2 : in std_logic_vector(3 downto 0);
-        writeRegister : in std_logic_vector(3 downto 0);
+        readRegister1 : in std_logic_vector(4 downto 0);
+        readRegister2 : in std_logic_vector(4 downto 0);
+        writeRegister : in std_logic_vector(4 downto 0);
         writeData : in std_logic_vector(31 downto 0);
         readData1 : out std_logic_vector(31 downto 0);
         readData2 : out std_logic_vector(31 downto 0)
@@ -15,7 +15,7 @@ entity registerFile is
 end entity;
 
 architecture registerFileArch of registerFile is
-    signal addressBus : std_logic_vector(3 downto 0) := (others => '0');
+    signal addressBus : std_logic_vector(4 downto 0) := (others => '0');
     signal inputBus : std_logic_vector(31 downto 0)  := (others => '0');
     signal outputBus : std_logic_vector(31 downto 0)  := (others => '0');
     signal writeEnable : std_logic := '0';

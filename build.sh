@@ -7,4 +7,4 @@ ghdl -a dataMemory.vhdl
 ghdl -a control.vhdl
 ghdl -a ALUControl.vhdl
 ghdl -a ALU.vhdl
-ghdl -a ramTestBench.vhdl
+ghdl -a main.vhdl
