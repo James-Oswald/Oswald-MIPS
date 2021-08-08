@@ -74,19 +74,16 @@ architecture RAMArch of RAM is
     end procedure;
     
     signal physicalRam : ramType := loadRamFromFile;
-    signal dataReg : std_logic_vector(dataWidth-1 downto 0) := (others => '0');
+    --signal dataReg : std_logic_vector(dataWidth-1 downto 0) := (others => '0');
 begin
-    process(clock) is
+    process(addressBus) is
     begin
         --report to_string(physicalRam);
-        if rising_edge(clock) then
-            if writeEnable = '1' then
-                physicalRam(to_integer(unsigned(addressBus))) <= inputBus;
-            else
-                dataReg <= physicalRam(to_integer(unsigned(addressBus)));
-            end if;            
-        end if;
-        outputBus <= dataReg;
+        if writeEnable = '1' then
+            physicalRam(to_integer(unsigned(addressBus))) <= inputBus;
+        else
+            outputBus <= physicalRam(to_integer(unsigned(addressBus)));
+        end if;            
     end process;
 end architecture;
     

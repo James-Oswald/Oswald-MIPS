@@ -21,7 +21,7 @@ architecture RAMTestBenchArch of RAMTestBench is
 begin
     ram : entity work.RAM(RAMArch) 
         generic map(
-            defaultValueFile => "TestBenchMemoryDump",
+            defaultValueFile => "memoryDumps/RamTestBenchMemoryDump",
             dataWidth => dataWidth,
             addressWidth => addressWidth)
         port map(
@@ -34,7 +34,7 @@ begin
             if unsigned(outputBus) = 0 and unsigned(addressBus) /= 0 then
                 finished <= '1';
             else
-                report integer'image(to_integer(unsigned(addressBus) - 1)) & ":" & to_string(outputBus);
+                report integer'image(to_integer(unsigned(addressBus))) & ":" & to_string(outputBus);
                 addressBus <= std_logic_vector(unsigned(addressBus) + 1);
             end if;
         end if;
