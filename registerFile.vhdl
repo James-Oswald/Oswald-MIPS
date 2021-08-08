@@ -1,10 +1,9 @@
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+library ieee;
+use ieee.std_logic_1164.all;
 
 entity registerFile is
     port(
-        clock : in std_logic;
         regWrite : in std_logic;
         readRegister1 : in std_logic_vector(3 downto 0);
         readRegister2 : in std_logic_vector(3 downto 0);
@@ -23,30 +22,27 @@ architecture registerFileArch of registerFile is
 begin
     physicalRam : entity work.RAM(RAM_Arch) 
         generic map(
-            defaultValueFile => "registerFileDump",
+            defaultValueFile => "memoryFiles/registerFile",
             dataWidth => 32,
             addressWidth => 4
         )
         port map(
-            clock => clock,
             writeEnable => writeEnable,
             addressBus => addressBus,
             inputBus => inputBus,
             outputBus => outputBus
         );
-    process(clock) is
+    process(readRegister1, readRegister2, writeRegister, writeData) is
     begin
-        if rising_edge(clock) then
-            addressBus <= readRegister1;
-            readData1 <= outputBus;
-            addressBus <= readRegister2;
-            readData2 <= outputBus;
-            if regWrite = '1' then
-                writeEnable <= '1';
-                addressBus <= writeRegister;
-                inputBus <= writeData;
-                writeEnable <= '0';
-            end if;
+        addressBus <= readRegister1;
+        readData1 <= outputBus;
+        addressBus <= readRegister2;
+        readData2 <= outputBus;
+        if regWrite = '1' then
+            writeEnable <= '1';
+            addressBus <= writeRegister;
+            inputBus <= writeData;
+            writeEnable <= '0';
         end if;
     end process;
 end architecture;

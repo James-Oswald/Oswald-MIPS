@@ -21,12 +21,14 @@ architecture RAMTestBenchArch of RAMTestBench is
 begin
     ram : entity work.RAM(RAMArch) 
         generic map(
-            defaultValueFile => "memoryDumps/RamTestBenchMemoryDump",
+            defaultValueFile => "memoryFiles/RamTestBench",
             dataWidth => dataWidth,
             addressWidth => addressWidth)
         port map(
-            clock => clock, addressBus => addressBus, writeEnable => writeEnable,
-            inputBus => inputBus, outputBus => outputBus);
+            addressBus => addressBus,
+            writeEnable => writeEnable,
+            inputBus => inputBus,
+            outputBus => outputBus);
     clock <= not clock after 10 ns when not (finished='1');
     process(clock) is 
     begin

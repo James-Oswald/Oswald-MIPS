@@ -14,7 +14,7 @@ entity RAM is
         addressWidth : integer := 32
     );
     port(
-        clock, writeEnable : in std_logic;
+        writeEnable : in std_logic;
         addressBus: in std_logic_vector(addressWidth-1 downto 0);
         inputBus : inout std_logic_vector(dataWidth-1 downto 0);
         outputBus : out std_logic_vector(dataWidth-1 downto 0)
@@ -76,7 +76,7 @@ architecture RAMArch of RAM is
     signal physicalRam : ramType := loadRamFromFile;
     --signal dataReg : std_logic_vector(dataWidth-1 downto 0) := (others => '0');
 begin
-    process(addressBus) is
+    process(addressBus, writeEnable, inputBus) is
     begin
         --report to_string(physicalRam);
         if writeEnable = '1' then
