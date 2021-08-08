@@ -103,7 +103,6 @@ begin
         end if;
     end process;
 
-
     process(clock) is
     begin
         if rising_edge(clock)then
